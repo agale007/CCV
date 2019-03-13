@@ -1,3 +1,5 @@
-Author - Prashant Agale
+Author - Prashant Agale 
+
 Project Name=Camilla's Custom Vinyl
+
 Object - Song,Mix,Track
