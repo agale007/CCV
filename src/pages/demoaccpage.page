@@ -1,0 +1,7 @@
+<apex:page standardController="Contact" recordSetVar="accounts">
+ <apex:repeat var="a"  value="{!accounts}">
+     {!a.id}
+    </apex:repeat>
+    
+    
+</apex:page>

@@ -1,0 +1,45 @@
+<aura:component controller="MixController" implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride" access="global">
+    <h1  class="slds-text-heading_medium">Mix Summary</h1><br></br>
+    <aura:attribute name="trackCountAtt" type="Integer" default="0"/>
+    <aura:attribute name="remTrackAtt" type="Integer" default="20"/>
+    <aura:attribute name="lengthOfSongAtt" type="Decimal" default="0"/>
+    <aura:attribute name="remMixLengthAtt" type="Decimal" default="90"/>
+    <aura:attribute name="mixsumsongId" type="Id"/>
+    <lightning:card title="Mix Summary" >
+    <body class="slds-scope">
+        <div class="slds-grid slds-wrap  custom-container">
+            <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">
+                <p class="slds-p-horizontal--medium">
+                    Track Count: 
+                    <lightning:formattedNumber value="{!v.trackCountAtt}"
+                                               maximumFractionDigits="2"/>  
+                </p>
+            </div>
+            <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">
+                <p class="slds-p-horizontal--medium">
+                    Remaining Tracks: 
+                    <lightning:formattedNumber value="{!v.remTrackAtt}"
+                                               maximumFractionDigits="2"/>                                       
+                </p>
+            </div><br></br><br></br>
+            <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">
+                <p class="slds-p-horizontal--medium">
+                    Mix Length (m): 
+                    <lightning:formattedNumber value="{!v.lengthOfSongAtt}"
+                                               maximumFractionDigits="2"/>                             
+                </p>
+            </div>
+            <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">
+                <p class="slds-p-horizontal--medium">
+                    Remaining Mix Length (m): 
+                    <lightning:formattedNumber value="{!v.remMixLengthAtt}"
+                                               maximumFractionDigits="2"/> 
+                </p>
+            </div>
+        </div>
+    </body>
+    </lightning:card>
+    <aura:handler name="mixSummary" event="c:componentEvent" action="{!c.handleChangeCheckboxValue}"/>
+    <br></br><br></br> 
+    <c:songComponent songId="{!v.mixsumsongId}"/>
+</aura:component>

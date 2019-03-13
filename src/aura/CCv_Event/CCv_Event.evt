@@ -1,0 +1,5 @@
+<aura:event type="COMPONENT">
+    <aura:attribute name="TrackCount" type="Integer"/>
+    <aura:attribute name="TrackLength" type="Decimal" />
+   
+</aura:event>

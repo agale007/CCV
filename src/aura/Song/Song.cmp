@@ -1,0 +1,89 @@
+<aura:component controller="songController"  >
+	<lightning:layout class="slds-page-header">
+        <div>
+            <h1 class="slds-text-heading--5px">Songs</h1>
+        </div> 
+    </lightning:layout>
+    
+    <aura:attribute name="dataTableColumns" 
+                    type="List" 
+                    access="public" />
+    <aura:attribute name="tableData" 
+                    type="Song__c" 
+                    access="public" />
+    <aura:attribute name="picklistValues"
+                    type="List" />
+      <aura:attribute name="ids"
+                    type="Id[]" />
+    
+    
+    <aura:attribute name="allData" type="List"/>
+    <aura:attribute name="currentPageNumber" type="Integer" default="1"/>
+    <aura:attribute name="pageSize" type="Integer" default="10"/>
+    <aura:attribute name="totalPages" type="Integer" default="false"/>
+    <aura:attribute name="pageList" type="List" default="false"/>
+    
+    <!-- This attribute will hold the update records from data table-->
+    <aura:attribute name="updatedRecord" type="Object[]" />
+
+    
+     <aura:handler name="init" 
+                   value="{!this}" 
+                   action="{!c.doinit}"/>
+    
+    <aura:registerEvent name="mixSummary" 
+                        type="c:CCv_Event"/>
+    
+ 
+    
+    <lightning:select label="Song Genre Filter" 
+                      aura:id="select"  
+                      onchange="{!c.onChange}">
+        <aura:iteration items="{!v.picklistValues}" 
+                        var="genre">
+            <option value="{!genre}">{!genre}</option>
+        </aura:iteration>
+    </lightning:select>
+    
+    <div>
+        <lightning:datatable
+                             columns="{! v.dataTableColumns }"
+                             data="{!v.tableData }"
+                             keyField="name"
+                             onrowselection="{!c.updateTrackCntHelper}"
+                             />
+    </div>
+    
+     <lightning:layoutItem padding="around-small" flexibility="auto">
+                <lightning:button label="First" iconName="utility:left" iconPosition="left"
+                                  onclick="{!c.onFirst}" disabled="{! v.currentPageNumber == 1}"/>
+                <lightning:button iconName="utility:chevronleft" iconPosition="left"
+                                  onclick="{!c.onPrev}" disabled="{! v.currentPageNumber == 1}"/>
+                <span class="slds-p-horizontal_x-small">
+                    <a onclick="{!c.processMe}" name="1" 
+                       class="{! (v.currentPageNumber == 1) ? 'selected' : ''}">1</a>
+                </span>
+                <span class="slds-p-horizontal_xxx-small">
+                    <a>...</a>
+                </span>
+                
+                <aura:iteration items="{!v.pageList}" var="item">
+                    <span class="slds-p-horizontal_x-small">
+                        <a onclick="{!c.processMe}" name="{!item}"
+                           class="{! (v.currentPageNumber == item) ? 'selected' : ''}">{!item}</a>
+                    </span>
+                </aura:iteration>
+                
+                <span class="slds-p-horizontal_xxx-small">
+                    <a>...</a>
+                </span>
+                <span class="slds-p-horizontal_x-small">
+                    <a onclick="{!c.processMe}" name="{!v.totalPages}"
+                       class="{! (v.currentPageNumber == v.totalPages) ? 'selected' : ''}">{!v.totalPages}</a>
+                </span>
+                <lightning:button iconName="utility:chevronright" iconPosition="right" 
+                                  disabled="{! v.currentPageNumber == v.totalPages}" onclick="{!c.onNext}"/>
+                <lightning:button label="Last" iconName="utility:right" iconPosition="right" 
+                                  disabled="{! v.currentPageNumber == v.totalPages}" onclick="{!c.onLast}"/>
+            </lightning:layoutItem>
+</aura:component>

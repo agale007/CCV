@@ -1,0 +1,99 @@
+<apex:page Standardcontroller="Mix__c" extensions="MixCtrlExt" action="{!getMode}">
+
+         <!-- Add Header Tag-->
+    <body>
+        
+  
+    <apex:sectionheader title="Mix Builder"  subTitle="{!mix.Name}" rendered="{!mix.Name!=null}"/> 
+    <apex:sectionheader title="Mix Builder"  subTitle="New Mix" rendered="{!mix.Name==null}"/> 
+    
+    
+    <apex:form id="idForm">
+
+       <apex:pageMessages ></apex:pageMessages>
+   
+           <!-- Save and Cancel Button-->
+        <apex:pageBlock title="Mix Builder">
+            <apex:pageBlockButtons location="Top">
+                <apex:commandButton value="Save" action="{!save}" disabled="{!isDisable}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}" immediate="true" disabled="{!isDisable}"/>
+                <apex:messages style="Messages"/>
+            </apex:pageBlockButtons>
+               
+                    <!-- Mix Details Page Block Section-->
+            <apex:pageBlockSection title="Mix Details" columns="2" collapsible="false" rendered="{!mode='edit'}">
+                <apex:inputField value="{!Mix.Name}" required="true" />
+                <apex:inputField value="{!Mix.Customer__c}" required="true" />
+            </apex:pageBlockSection>
+            
+              <apex:pageBlockSection title="Mix Details" columns="2" collapsible="false" rendered="{!mode='readOnly'}">
+                <apex:outputField value="{!Mix.Name}"/>
+                <apex:outputField value="{!Mix.Customer__c}"/>
+            </apex:pageBlockSection>
+
+            
+                      <!-- Mix Summary Page Block Section-->
+            <apex:pageBlockSection title="Mix Summary" columns="4" id="mixsum" collapsible="false" >
+                <apex:outputLabel style="font-weight:600" value="Track Count:" for="TrackCount" />
+                <apex:outputText id="TrackCount" value="{!trackCount}" />
+                <apex:outputLabel style="font-weight:600" value="Remainig Track:" for="RemainigTrack" />
+                <apex:outputText id="RemainigTrack" value="{!remainigTrack}"/>
+                <apex:outputLabel style="font-weight:600" value="Track Length:" for="TrackLength" />
+                <apex:outputText id="TrackLength" value="{!trackLength}"/>
+                <apex:outputLabel style="font-weight:600" value="TrackRemaining Length:" for="TrackRemainingLength" />
+                <apex:outputText id="TrackRemainingLength" value="{!remainingLength}"/>
+                </apex:pageBlockSection>      
+        </apex:pageBlock>
+    </apex:form>
+    
+    <apex:form id="songForm" > 
+       
+        <apex:pageBlock >
+                    <!-- Songs Page Block Section-->
+               <apex:pageBlockSection title="Songs">
+                <apex:panelGroup >
+                    <apex:outputLabel value="Song Genre Filter: "/>
+                    <apex:selectList value="{!genreToSelect}" size="1"  >                                     
+                        <apex:selectOptions value="{!genres}"/>                              
+                        <apex:actionSupport event="onchange" action="{!filterSongByGenre}" reRender="songForm"/>
+                    </apex:selectList>
+                </apex:panelGroup> 
+            </apex:pageBlockSection>
+            
+                 <!-- Songs List Page Block Table-->
+            <apex:pageBlockTable value="{!Song}" var="songs" id="songs"  >                  
+                <apex:column title="Select" headerValue="Select">
+                    <apex:inputCheckbox id="inputCheckbox" onchange="OnchangeSelected()" value="{!songs.bool}" disabled="{!isDisable}">                              
+                    </apex:inputCheckbox>                  
+                </apex:column>
+                <apex:column title="Song Name" value="{!songs.song.Name}"/>
+                <apex:column title="Genre" value="{!songs.song.Genre__c}"/>
+                <apex:column title="Length (m)" value="{!songs.song.Length_m__c}"/>
+            </apex:pageBlockTable>
+          <apex:actionFunction action="{!getSelectedSong}" name="onChkBoxClk" rerender="mixsum" />   
+               
+                      <!-- Pagination Buttons-->
+            <apex:pageBlockButtons location="Bottom" >
+                <apex:commandButton value="|<First" action="{!FirstPage}" disabled="{!getCurrentPageNumber==1}"  reRender="songForm"/>
+                <apex:commandButton value="<Previous" action="{!PreviousPage}" disabled="{!getCurrentPageNumber==1}"  reRender="songForm"/>
+                <apex:outputText >  Page {!getCurrentPageNumber} of {!getTotalPages}  </apex:outputText>
+                <apex:commandButton value="Next>" action="{!NextPage}" disabled="{!getCurrentPageNumber==getTotalPages}"  reRender="songForm"/>
+                <apex:commandButton value="Last>|" action="{!LastPage}" disabled="{!getCurrentPageNumber==getTotalPages}"  reRender="songForm" />
+            </apex:pageBlockButtons> 
+            
+        </apex:pageBlock>
+    </apex:form>
+          </body>
+    
+       <!-- Javascript Function Call-->
+    <script type="text/javascript">
+  
+                    function OnchangeSelected(){
+                        onChkBoxClk();   
+                    }
+                    </script>
+    
+   
+     
+  
+</apex:page>

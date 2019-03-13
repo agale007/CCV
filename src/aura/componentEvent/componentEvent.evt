@@ -1,0 +1,5 @@
+<aura:event type="COMPONENT">
+    <aura:attribute name="trackCount" type="Integer"/>
+    <aura:attribute name="mixLength" type="Decimal" />
+    <aura:attribute name="songList" type="Song__c"/>
+</aura:event>

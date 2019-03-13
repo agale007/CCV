@@ -1,0 +1,37 @@
+<aura:component >
+    <lightning:layout class="slds-page-header">
+        <div>
+            <h1 class="slds-text-heading--5px">Mix Summary</h1>
+        </div> 
+    </lightning:layout>
+    
+    <aura:attribute name="disremaininglength" 
+                    type="decimal"/>
+     <aura:attribute name="trackcount"
+                     type="Integer"/>
+     <aura:attribute name="remainigtrack"
+                     type="Integer"/>
+     <aura:attribute name="dislength" 
+                     type="Decimal"/>
+    
+    <aura:handler name="mixSummary"
+                  event="c:CCv_Event"
+                  action="{!c.handleMixSummaryEvent}"/>
+    
+    
+    <lightning:card title="mix Summary">
+       <body class="slds-scope">
+            <div class="slds-grid slds-wrap  custom-container">
+                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1" label="hi">   
+                    <p>TrackCount: <lightning:formattedNumber value="{!v.trackcount}" /></p>
+                </div>
+                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1" label="hi"> 
+                    <p>Remaining Track Count: <lightning:formattedNumber value="{!v.remainigtrack}" /></p></div>
+                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1" label="hi"> 
+                    <p>Track Legth: <lightning:formattedNumber value="{!v.dislength}" /></p></div>
+                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1" label="hi"> 
+                    <p>Remaning Track Legth: <lightning:formattedNumber  value="{!v.disremaininglength}" /></p></div>
+            </div></body>
+    </lightning:card>
+        <c:Song/>
+</aura:component>

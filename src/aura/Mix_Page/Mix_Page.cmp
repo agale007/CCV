@@ -1,0 +1,70 @@
+<aura:component controller="songController" >
+    <lightning:layout class="slds-page-header">
+        <div>
+            <h2 class="slds-text-heading--medium,slds-text-heading_bold">Mix Builder</h2>
+        </div>  
+    </lightning:layout>
+    
+  
+    <aura:attribute name="mixRecord"
+                    type="Mix__c" 
+                    default="{'sobjectType':'Mix__c',
+                                                'Name':'',
+                                                'Customer__c':'',
+                                                }"/>
+     <aura:attribute name="songs"
+                     type="List" />
+    <aura:attribute name="songRecord" 
+                    type="Song__c[]"/>
+    
+   
+
+    <lightning:card title="Mix Builder" >
+        <div class="slds-align_absolute-center" >
+          <lightning:button label='Save Details' 
+                             class="slds-m-top--medium"
+                             variant="brand"
+                             onclick="{!c.save}"/> 
+            <lightning:button label="Cancel"
+                             class="slds-m-top--medium"
+                             variant="brand"
+                             />
+        </div>
+        
+        
+        <lightning:layout class="slds-page-header">
+            <div>
+                <h1 class="slds-text-heading--5px slds-text-heading_bold">Mix Details</h1>
+            </div>  
+        </lightning:layout>      
+        
+      
+          
+            
+            
+        <form>    
+
+       <body class="slds-scope">
+            <div class="slds-grid slds-wrap  custom-container">
+                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1" >  
+             <lightning:input aura:id="formId"
+                         label="mixName"
+                         value="{!v.mixRecord.Name}"
+                              required="true"/></div>
+             <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">     
+        	<force:inputField aura:id="formId"
+                              value="{!v.mixRecord.Customer__c}"
+                              required="false"
+                              class=".slds-combobox-group"
+                              /><br/><br/></div>
+          
+           </div></body>
+          
+            
+ </form>
+ <c:Mix_Summary trackcount='0' remainigtrack='20' dislength='0' disremaininglength='90'/>
+
+    
+    </lightning:card>
+       
+</aura:component>

@@ -1,0 +1,99 @@
+<aura:component controller="MixController" implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride" access="global">
+    <lightning:layout class="slds-page-header slds-page-header--object-home">
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:home" alternativeText="My Expenses"/>
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label">Mix Builder</h1>
+                <h2 class="slds-text-heading--medium">New Mix</h2>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <aura:attribute name="record" 
+                    type="Object"/>
+    <aura:attribute name="recordId" 
+                    type="id"/>
+    <aura:attribute name="recordError" 
+                    type="String"/>
+   <aura:attribute name="mixRecord" 
+                   type="Mix__c"
+                   default="{ 'sobjectType': 'Mix__c',
+                             'Name':'',
+                             'Customer__c':'',
+                               }"
+                    />
+    <aura:attribute name="songRecord" 
+                    type="Song__c[]"/>
+     <aura:attribute name="totalLengthOfSong" 
+                     type="Decimal"/>
+                   
+     
+    <lightning:card title="Mix Builder" >
+        <div class="slds-align_absolute-center" >
+              <lightning:button label="Save" 
+                          class="slds-m-top--medium"
+                          variant="brand"
+                          onclick="{!c.save}"
+                          />
+        <lightning:button label="cancel" 
+                          class="slds-m-top--medium"
+                          variant="brand"
+                          onclick="{!c.cancel}"/>
+        </div>
+          </lightning:card>
+                      
+    
+   
+    <aura:handler name="mixSummary" event="c:componentEvent" action="{!c.getSongList}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}"/>
+    
+   
+   
+    <lightning:layout class="slds-page-header">
+            <div>
+                <h1 class="slds-text-heading--5px slds-text-heading_bold">Mix Details</h1>
+            </div>  
+        </lightning:layout>      
+    <lightning:card title="Mix Details" >
+    <form >    
+        <body class="slds-scope">
+            <div class="slds-grid slds-wrap  custom-container">
+                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1" > 
+        <lightning:input aura:id="nameId"
+                         label="mixName"
+                         value="{!v.mixRecord.Name}" 
+                         required='true'/></div>
+      
+       <div class="{!if(v.recordId ==null,'slds-show','slds-hide')}">
+       Customer:  
+       	<force:inputField aura:id="custId"
+                             value="{!v.mixRecord.Customer__c}"
+                             required="false"
+                             class=".slds-combobox-group"
+                        />
+                 </div>
+      
+       <div class="{!if(v.recordId ==null,'slds-hide','slds-show')}">
+       Customer:
+        <lightning:formattedText value="{!v.mixRecord.Customer__r.Name}" />
+       </div>
+            </div>
+            </body>
+        
+    
+    </form>
+  
+    </lightning:card>
+
+ <aura:if isTrue="{!not(empty(v.recordError))}">
+        <div>
+            {!v.recordError}
+        </div>
+    </aura:if><br></br>
+        
+   <c:MixSummaryComponent mixsumsongId="{!v.recordId}"/>  
+  
+</aura:component>

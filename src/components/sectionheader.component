@@ -1,0 +1,6 @@
+<apex:component >
+    <apex:attribute name="subtitle" type="String" description="TODO: Describe me"/>
+    <apex:attribute name="title" type="String" description="TODO: Describe me"/>
+    <apex:attribute name="iconsrc" type="String" description="TODO: Describe me"/>
+  
+</apex:component>

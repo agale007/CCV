@@ -1,0 +1,196 @@
+<aura:component controller="MixLtngCtrl" implements="force:hasRecordId,lightning:actionOverride">
+
+    
+    <!--***************************************Attributes***********************************************-->
+    <aura:attribute name="recordId" type="Id"/>
+    <aura:attribute name="mixRecord" type="Mix__c"
+                    default="{'sobjectType': 'Mix__c',
+                             'Name':'',
+                             'Customer__c':'',
+                             }"
+                    />
+    <aura:attribute name="wrapSongsList" type="Object[]"/> 
+    <aura:attribute name="trackCount" type="Integer" default="0"/>
+    <aura:attribute name="remTrack" type="Integer" default="20"/>
+    <aura:attribute name="lengthOfSong" type="Decimal" default="0"/>
+    <aura:attribute name="remMixLength" type="Decimal" default="90"/>
+    <aura:attribute name="selectedSongs" type="Object[]"/>
+    <aura:attribute name="selectedSongsForGenre" type="Object[]"/>
+    <aura:attribute name="options" type="List" default="[]"/>
+    
+    <aura:attribute name="paginationList" type="Object[]"/>
+    <aura:attribute name="pageSize" type="Integer" default="5"/>
+    <aura:attribute name="totalSize" type="Integer"/>
+    <aura:attribute name="pageNumber" type="Integer" default="1"/>
+    <aura:attribute name="totalPages" type="Integer"/>
+    <aura:attribute name="start" type="Integer" />
+    <aura:attribute name="end" type="Integer"/>
+    
+    <!--***************************************Aura Handlers***************************************-->
+    
+    <aura:handler name="init"  value="{!this}" action="{!c.doInit}" />
+    
+    
+        
+        <!--*************************************For Icon*******************************************-->
+         <div>
+             <lightning:layout class="slds-page-header slds-page-header--object-home">
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:home" alternativeText="My Expenses"/>
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label">Mix Builder</h1>
+                <h2 class="slds-text-heading--medium">New Mix</h2>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+        <h1  class="slds-text-heading_medium">Mix Details</h1><br></br>
+        
+        <!--********************************************************Mix Form*********************************************-->
+        <form> 
+           
+    <lightning:card title="Mix Builder" >
+        <div class="slds-align_absolute-center" >
+              <lightning:button label="Save" 
+                          class="slds-m-top--medium"
+                          variant="brand"
+                          onclick="{!c.save}"
+                          />
+        <lightning:button label="cancel" 
+                          class="slds-m-top--medium"
+                          variant="brand"
+                          onclick="{!c.cancel}"/>
+        </div>
+          </lightning:card>
+                      
+           <body class="slds-scope">
+            <div class="slds-grid slds-wrap  custom-container">
+                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1" > 
+            <lightning:input aura:id="nameId"
+                             label="mixName"
+                             value="{!v.mixRecord.Name}"
+                             required="true"/></div>
+             <div class="slds-size_1-of-2 slds-max-small-size_1-of-1" > 
+            <div class="{!if(v.recordId ==null,'slds-show','slds-hide')}">
+                Customer:  
+                <force:inputField aura:id="custId"
+                                  value="{!v.mixRecord.Customer__c}"
+                                  required="false"
+                                  class=".slds-combobox-group"
+                                  />
+            </div>
+            
+            <div class="{!if(v.recordId ==null,'slds-hide','slds-show')}">
+                Customer:
+                <lightning:formattedText value="{!v.mixRecord.Customer__r.Name}" />
+            </div>
+                </div></div></body> 
+        </form>
+    </div><br></br>
+    
+    <!--***************************************Mix Summary Detail Section***************************************-->
+    <h1  class="slds-text-heading_medium">Mix Details</h1><br></br>
+    <lightning:card title="Mix Details" >
+    <body class="slds-scope">
+        
+        <div class="slds-grid slds-wrap  custom-container">
+            
+            <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">
+                <p class="slds-p-horizontal--medium">
+                    Track Count: 
+                    <lightning:formattedNumber value="{!v.trackCount}"
+                                               maximumFractionDigits="2"/>  
+                </p>
+            </div>
+            <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">
+                <p class="slds-p-horizontal--medium">
+                    Remaining Tracks: 
+                    <lightning:formattedNumber value="{!v.remTrack}"
+                                               maximumFractionDigits="2"/>                                       
+                </p>
+            </div><br></br><br></br>
+            <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">
+                <p class="slds-p-horizontal--medium">
+                    Mix Length (m): 
+                    <lightning:formattedNumber value="{!v.lengthOfSong}"
+                                               maximumFractionDigits="2"/>                             
+                </p>
+            </div>
+            <div class="slds-size_1-of-2 slds-max-small-size_1-of-1">
+                <p class="slds-p-horizontal--medium">
+                    Remaining Mix Length (m): 
+                    <lightning:formattedNumber value="{!v.remMixLength}"
+                                               maximumFractionDigits="2"/> 
+                </p>
+            </div>
+        </div>
+        
+    </body>
+    </lightning:card>
+    <br></br><br></br> 
+    
+    <!--*******************For Genre Filter************************************-->
+      <lightning:card title="Songs">
+    <div>
+        <lightning:select aura:id="select" name="select" label="Select Genre" onchange="{!c.onChange}">
+            <aura:iteration items="{!v.options}" var="genre"> 
+                <option value="{!genre.strValue}">
+                    {!genre.strValue}
+                </option>
+            </aura:iteration>
+        </lightning:select>
+    </div><br></br><br></br>
+    
+    <!--********************************************************Song Table*********************************************-->
+    
+    <div>
+        <div class="slds-p-around--large">
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                <thead>
+                    <tr class="slds-text-title--caps">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Select">Select</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Song Name">Song Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Genre">Genre</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Length (m)">Length (m)</div>
+                        </th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <aura:iteration items="{!v.paginationList}" var="s">
+                        <tr>
+                            <th scope="row">
+                                <lightning:input type="checkbox" checked="{!s.selected}" onchange="{!c.updateMixSummary}"/>
+                            </th>
+                            <th scope="row">
+                                <div class="slds-truncate" title="{!s.song.Name}">{!s.song.Name}</div>
+                            </th>
+                            <th scope="row">
+                                <div class="slds-truncate" title="{!s.song.Genre__c}">{!s.song.Genre__c}</div>
+                            </th>
+                            <th scope="row">
+                                <div class="slds-truncate" title="{!s.song.Length_m__c}">{!s.song.Length_m__c}</div>
+                            </th>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </div>
+    </div>
+          <span class="slds-align_absolute-center" >
+          <lightning:button label="Previous" disabled="{!v.start ==0}"  onclick="{!c.previous}" />
+                <!--Page {!v.pageNumber} of {!v.totalPages}-->
+                <lightning:button label="Next" disabled="{!v.end >= v.totalSize}" onclick="{!c.next}" />
+          </span>
+    </lightning:card>
+    
+</aura:component>
